@@ -15,3 +15,30 @@ startBtn.addEventListener('click', () => {
     // Start the quiz or perform other actions here
     console.log("Quiz started! User name:", userName);
 });
+
+function startQuiz() {
+    saveUsernameToLocalStorage(userName);
+    isQuizActive = true;
+    userName = nameInput.value;
+    loadQuestion();
+    startTimer();
+
+    // Send the username to the server
+    fetch('/submit-username', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username: userName })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Error submitting username');
+        }
+        console.log('Username submitted successfully');
+    })
+    .catch(error => {
+        console.error('Error submitting username:', error);
+        alert('Failed to submit username. Please try again later.');
+    });
+}
